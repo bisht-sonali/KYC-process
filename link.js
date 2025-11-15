@@ -59,7 +59,7 @@ fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNh
             method:"POST",
             body:fromData
          })
-         .then(res => Text())
-         .then(txt=>alert("video uploaded successfully!"))
+         .then(res => res.text())
+         .then(msg=>alert("video uploaded successfully!"))
          .catch(err=>alert("upload failed!"));
     };
