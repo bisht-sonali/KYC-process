@@ -12,6 +12,13 @@ body {
   padding: 20px;
 }
 
+
+
+.controls {
+  display: flex;
+  flex-direction: column;
+}
+
 /* --------- LAYOUT WRAPPER --------- */
 .wrap {
   max-width: 780px;
@@ -110,3 +117,4 @@ video {
     width: 100%;
   }
 }
+
