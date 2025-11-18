@@ -66,17 +66,17 @@ startBtn.onclick = async function(){
 };
 
 stopBtn.onclick = function(){
-    mediaRecorder.stop();
-    preview.srcObject.getTracks().forEach(t => t.stop());
+   if(mediaRecorder) mediaRecorder.stop();
+  if( preview.srcObject)  preview.srcObject.getTracks().forEach(t => t.stop());
     stopBtn.style.display = "none";
 };
 
 
 //upload vid to google script
 
-document.getElementById("uploadBtn").onclick = function(){
+uploadBtn.onclick = function(){
     if(!finalBlob){
-        alert("no video to upload!");
+        alert("no video recorded!");
         return;
     }
 
@@ -89,7 +89,7 @@ document.getElementById("uploadBtn").onclick = function(){
          })
          .then(res => res.text())
          .then(msg=> alert("video uploaded successfully!"))
-         .catch(err=> alert("upload failed!"));
+         .catch(err=> alert("upload failed:"+err));
     };
 
 
