@@ -40,11 +40,11 @@ let finalBlob = null;
 (function initUser() {
   const name = getNameFromURL();
   if (name) {
-    elName.textContent = Dear ${name},;
+    elName.textContent =` Dear ${name},`;
   } else {
-    elName.textContent = Dear Customer,;
+    elName.textContent = `Dear Customer,`;
   }
-  elRequest.textContent = Video KYC Process for Request No: ${generateRequestID()};
+  elRequest.textContent = `Video KYC Process for Request No: ${generateRequestID()}`;
 })();
 
 /* ---------------------------
@@ -55,7 +55,7 @@ elStart.addEventListener("click", async () => {
   recordedChunks = [];
   finalBlob = null;
   elRecorded.style.display = "none";
-  elUpload.style.display = "none";
+  elUpload.style.display = "none";     fd
   elStatus.textContent = "";
 
   try {
@@ -113,7 +113,7 @@ elStop.addEventListener("click", () => {
 
 /* ---------------------------
   Upload recorded blob to Google Script
-  (Apps Script expects form field name "file" in our earlier instructions)
+  (Apps Script expects form field name "file")
 ---------------------------- */
 elUpload.addEventListener("click", async () => {
   if (!finalBlob) {
@@ -131,13 +131,13 @@ elUpload.addEventListener("click", async () => {
 
   try {
     const fd = new FormData();
-    fd.append("file", finalBlob, KYC_${Date.now()}.webm);
-    // append metadata (name + request id) so Apps Script can use them
+    fd.append("file", finalBlob,` KYC_${Date.now()}.webm`);
+    // append metadata (name + request id)
     const name = getNameFromURL();
     fd.append("name", name || "");
     fd.append("requestId", elRequest.textContent || "");
 
-    const res = await fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec", { method: "POST", body: fd });
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: fd });
     const text = await res.text();
     elStatus.textContent = "Upload finished.";
     alert("Upload finished: " + text);
