@@ -1,7 +1,7 @@
 /* ---------------------------
   Configuration - replace this
 ---------------------------- */
-const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_WEB_APP_URL";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec";
 
 /* ---------------------------
   Helper: get name from URL
