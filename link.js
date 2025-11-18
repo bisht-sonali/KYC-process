@@ -52,7 +52,7 @@ let finalBlob = null;
 ---------------------------- */
 elStart.addEventListener("click", async () => {
   // clear previous
-  recordedChunks = [];
+  recordedChunks = [];   
   finalBlob = null;
   elRecorded.style.display = "none";
   elUpload.style.display = "none";     fd
@@ -131,7 +131,7 @@ elUpload.addEventListener("click", async () => {
 
   try {
     const fd = new FormData();
-    fd.append("file", finalBlob,`KYC_${Date.now()}.webm`);
+    fd.append("file",finalBlob,`KYC_${Date.now()}.webm`);
     // append metadata (name + request id)
     const name = getNameFromURL();
     fd.append("name", name || "");
