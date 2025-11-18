@@ -2,7 +2,7 @@
 const query = new URLSearchParams(window.location.search);
 let username = query.get("name");
 if(username){
-    document.getElementById("customerName").innerText =`Dear${username},`;
+    document.getElementById("customerName").innerText =`Dear ${username},`;
 }
 
 
@@ -42,7 +42,7 @@ startBtn.onclick = async function(){
         preview.srcObject = stream;
 
         startBtn.style.display = "none";
-        startBtn.style.display = "inline-block";
+        stopBtn.style.display = "inline-block";
 
         recordedChunks = [];
 
@@ -61,7 +61,7 @@ startBtn.onclick = async function(){
 
         mediaRecorder.start();
     } catch(error){
-        alert("camera access failed"+ error);
+        alert("camera access failed"+ error);   
     }
 };
 
@@ -85,9 +85,9 @@ document.getElementById("uploadBtn").onclick = function(){
 
     fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec",{
             method:"POST",
-            body:fromData
+            body:formData
          })
-         .then(res => r.text())
+         .then(res => res.text())
          .then(msg=> alert("video uploaded successfully!"))
          .catch(err=> alert("upload failed!"));
     };
