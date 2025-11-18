@@ -1,51 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLC KYC</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BLC KYC</title>
+  <link rel="stylesheet" href="link.css">
 </head>
-<link rel="stylesheet" href="link.css">
 <body>
-    <h1 id="requestNumber">video KYC process for Request number:</h1>
+  <main class="wrap">
+    <h1 id="requestNumber">Video KYC process for Request number:</h1>
+    <h2 id="customerName">Dear Customer,</h2>
 
-   <h2 id="customerName">Dear customer,</h2> 
+    <p id="intro">Please give us your video consent for the application after reading the terms and condition.</p>
 
-Please give us your video consent for the application after reading the terms and condition.
-
-<!--SCROLL BOX-->
-
-<div class="scroll-box">
-
-    <p>
+    <div class="scroll-box" aria-label="KYC instructions">
+      <p>
         🔹 Please ensure you are in a well-lit area during the Video KYC process.<br/>
         🔹 Keep your original ID proof ready for verification.<br/>
         🔹 The video session will be recorded for compliance purposes.<br/>
         🔹 Make sure your internet connection is stable.<br/>
         🔹 Do not refresh or close the page during the process.<br/>
-        🔹 For any issue, contact our customer support team
-        </p>
-     </div>
+        🔹 For any issue, contact our customer support team.
+      </p>
+    </div>
 
-     <P>
-      <span style="color: red;">Note: The video kyc will be taken as consent for terms and conditions</span>  
-     </P>
+    <p><span class="warning">Note: The video KYC will be taken as consent for terms and conditions</span></p>
 
+    <div class="controls">
+      <button id="startKYC">Start KYC</button>
+      <button id="stopBtn" style="display:none;">Stop Recording</button>
+      <button id="uploadBtn" style="display:none;">Upload Video</button>
+    </div>
 
-          <button id="startKYC">start KYC</button>
-          <button id="stopBtn" style="display: none;">stop recording</button>
-          <button id="uploadBtn" style="display: none;">upload video</button>
-     
+    <div class="videos">
+      <video id="preview" autoplay playsinline muted style="display:none;"></video>
+      <video id="recorded" controls style="display:none;"></video>
+    </div>
 
-     <!--live camera-->
-     <video id="preview" width="300px" autoplay playsinline style="display: none; border: 2px solid #000; width: 300px;"></video>
+    <div id="status" class="status" aria-live="polite"></div>
+  </main>
 
-       <!--record vid-->
-    <video id="recorder" width="300px" controls style="display: none; margin-top: 20px; width: 300px;"></video>
-
-
-         <script src="link.js"></script>
-
+  <script src="link.js"></script>
 </body>
 </html>
-
