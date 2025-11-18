@@ -55,7 +55,7 @@ elStart.addEventListener("click", async () => {
   recordedChunks = [];   
   finalBlob = null;
   elRecorded.style.display = "none";
-  elUpload.style.display = "none";     fd
+  elUpload.style.display = "none";     
   elStatus.textContent = "";
 
   try {
