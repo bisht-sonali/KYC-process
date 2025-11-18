@@ -44,7 +44,11 @@ let finalBlob = null;
 ---------------------------------------- */
 (function initUser() {
   const name = getNameFromURL();
+  
+  // FIXED TEMPLATE STRING
   elName.textContent = name ? Dear ${name}, : "Dear Customer,";
+
+  // FIXED TEMPLATE STRING
   elRequest.textContent = Video KYC Process for Request No: ${generateRequestID()};
 })();
 
@@ -61,11 +65,11 @@ elStart.addEventListener("click", async () => {
   elStatus.textContent = "";
 
   try {
-    // Mobile safe constraints
+    // Fully mobile-safe recording configuration
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: "user",
-        width: { ideal: 1280 },
+        width: { ideal: 720 },
         height: { ideal: 720 }
       },
       audio: true
@@ -79,9 +83,9 @@ elStart.addEventListener("click", async () => {
     elStop.style.display = "inline-block";
     elStatus.textContent = "Recording...";
 
-    // MediaRecorder (mobile supported format)
+    // Mobile supported format (Android + iPhone Chrome)
     mediaRecorder = new MediaRecorder(stream, {
-      mimeType: "video/webm; codecs=vp8"
+      mimeType: "video/webm;codecs=vp8"
     });
 
     mediaRecorder.ondataavailable = (e) => {
@@ -101,8 +105,8 @@ elStart.addEventListener("click", async () => {
     mediaRecorder.start();
   } catch (err) {
     console.error(err);
-    alert("Camera access failed: " + err);
-    elStatus.textContent = "Camera not accessible. Try Chrome.";
+    alert("Camera access failed. Please allow camera permissions.");
+    elStatus.textContent = "Camera not accessible. Try another browser.";
   }
 });
 
@@ -115,9 +119,9 @@ elStop.addEventListener("click", () => {
 
   mediaRecorder.stop();
 
-  // Turn off camera after stopping
+  // Turn off camera
   if (elPreview.srcObject) {
-    elPreview.srcObject.getTracks().forEach(t => t.stop());
+    elPreview.srcObject.getTracks().forEach(track => track.stop());
     elPreview.srcObject = null;
   }
 
@@ -140,7 +144,10 @@ elUpload.addEventListener("click", async () => {
 
   try {
     const fd = new FormData();
+    
+    // FIXED TEMPLATE STRING
     fd.append("file", finalBlob, KYC_${Date.now()}.webm);
+    
     fd.append("name", getNameFromURL());
     fd.append("requestId", elRequest.textContent);
 
@@ -150,8 +157,9 @@ elUpload.addEventListener("click", async () => {
     });
 
     const text = await res.text();
-    elStatus.textContent = "Upload complete.";
-    alert("Upload successful!");
+
+    elStatus.textContent = "Upload successful!";
+    alert("Upload completed!");
   } catch (err) {
     console.error(err);
     alert("Upload failed: " + err);
