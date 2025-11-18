@@ -137,7 +137,7 @@ elUpload.addEventListener("click", async () => {
     fd.append("name", name || "");
     fd.append("requestId", elRequest.textContent || "");
 
-    const res = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: fd });
+    const res = await fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec", { method: "POST", body: fd });
     const text = await res.text();
     elStatus.textContent = "Upload finished.";
     alert("Upload finished: " + text);
