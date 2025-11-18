@@ -7,32 +7,25 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #f7f7f7;
+  background: #f2f2f2;
   color: #222;
-  padding: 20px;
+  padding: 16px;
 }
 
-
-
-.controls {
-  display: flex;
-  flex-direction: column;
-}
-
-/* --------- LAYOUT WRAPPER --------- */
+/* --------- MAIN WRAPPER --------- */
 .wrap {
   max-width: 780px;
   margin: 0 auto;
   background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 20px 18px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.08);
 }
 
 /* --------- HEADINGS --------- */
 h1 {
   font-size: 20px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 h2 {
@@ -44,31 +37,38 @@ h2 {
 .scroll-box {
   border: 1px solid #ccc;
   background: #fafafa;
-  padding: 12px;
-  height: 150px;
+  padding: 14px;
+  height: 160px;
   overflow-y: auto;
-  border-radius: 6px;
-  margin: 12px 0 16px;
+  border-radius: 8px;
+  margin: 14px 0 16px;
+  line-height: 1.5;
 }
 
-/* --------- WARNING TEXT --------- */
+/* --------- WARNING --------- */
 .warning {
   color: #d40000;
   font-weight: bold;
 }
 
 /* --------- BUTTONS --------- */
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 button {
-    display: inline-block;
-    opacity: 1;
+  flex: 1;
   background: #007bff;
   color: white;
-  padding: 10px 14px;
+  padding: 12px;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 16px;
   cursor: pointer;
-  margin: 10px 6px 0 0;
+  transition: 0.3s;
 }
 
 button:hover {
@@ -84,37 +84,51 @@ button:disabled {
 .videos {
   margin-top: 20px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: column;
+  gap: 14px;
 }
 
 video {
-  width: 320px;
-  max-width: 100%;
-  border-radius: 6px;
+  width: 100%;
+  max-height: 340px;
+  border-radius: 8px;
   border: 1px solid #444;
+  background: black;
+  object-fit: cover;
 }
 
-/* --------- STATUS TEXT --------- */
+/* --------- STATUS --------- */
 .status {
-  margin-top: 15px;
-  font-weight: bold;
+  margin-top: 14px;
+  font-weight: 600;
   color: #444;
+  font-size: 15px;
 }
 
-/* --------- MOBILE FRIENDLY --------- */
-@media (max-width: 520px) {
+/* --------- MOBILE OPTIMIZATION --------- */
+@media (max-width: 540px) {
+
+  body {
+    padding: 10px;
+  }
+
+  .wrap {
+    padding: 16px;
+  }
+
   .controls {
-    display: flex;
     flex-direction: column;
   }
 
   button {
     width: 100%;
+    font-size: 17px;
+    padding: 14px;
   }
 
   video {
-    width: 100%;
+    height: auto;
+    max-height: 280px;
   }
-}
 
+}
