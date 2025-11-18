@@ -1,65 +1,97 @@
+// get name from url
+const query = new URLSearchParams(window.location.search);
+let username = query.get("name");
+if(username){
+    document.getElementById("customerName").innerText =`Dear${username},`;
+}
+
+
+//create unique request id
+function generateRequestID(){
+    return "ALCREQ"+Math.floor(100+Math.random()*900);
+}
+let requestID = generateRequestID();
+document.getElementById("requestNumber").innerText = "Video KYC process for Request No:"+requestID;
+
+
+
+//camera+rec
+
 let mediaRecorder;
 let recordedChunks = [];
+let finalBlob = null;
 
-//start kyc
+const startBtn = document.getElementById("startKYC");
 
-document.getElementById("startKYC").onclick = async function(){
-recordedChunks = [];
-finalBlob = null;
+const stopBtn = document.getElementById("stopBtn");
 
-    let stream = await
-    navigator.mediaDevices.getUserMedia({video:true,audio:true});
+const uploadBtn = document.getElementById("uploadBtn");
 
-    let preview = document.getElementById("preview");
-    preview.srcObject = stream;
-    preview.style.display = "block";
+const preview = document.getElementById("preview");
 
-    mediaRecorder = new MediaRecorder(stream);
+const recorded = document.getElementById("recorded");
 
-    mediaRecorder.ondataavailable = function(e){
-        recordedChunks.push(e.data);
-    };
+startBtn.onclick = async function(){
+    try{
+        let stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        });
 
-    mediaRecorder.onstop = async function (){
-        finalBlob = new Blob(recordedChunks,{type:"video/mp4"});
-        let videoURL = URL.createObjectURL(finalBlob);
+        preview.style.display = "block";
+        preview.srcObject = stream;
 
-        let recordedVideo = document.getElementById("recorded");
-         recordedVideo.src = "url";
-          recordedVideo.style.display = "block";
+        startBtn.style.display = "none";
+        startBtn.style.display = "inline-block";
 
-         //show upload button
-         document.getElementById("uploadBtn").style.display = "inline-block"
-    };
+        recordedChunks = [];
 
-    mediaRecorder.start();
+        mediaRecorder = new MediaRecorder(stream);
 
-    document.getElementById("stopBtn").style.display = "inline-block";
+        mediaRecorder.ondataavailable = (e) => {
+            recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () =>{
+            finalBlob = new Blob(recordedChunks,{type: "video/webm"});
+            recorded.src = URL.createObjectURL(finalBlob);
+            recorded.style.display = "block";
+            uploadBtn.style.display = "inline-block";
+        };
+
+        mediaRecorder.start();
+    } catch(error){
+        alert("camera access failed"+ error);
+    }
+};
+
+stopBtn.onclick = function(){
+    mediaRecorder.stop();
+    preview.srcObject.getTracks().forEach(t => t.stop());
+    stopBtn.style.display = "none";
 };
 
 
-// stop recording
+//upload vid to google script
 
-document.getElementById("stopBtn").onclick = function(){
-mediaRecorder.stop();
-};
-
-
-//upload video button
 document.getElementById("uploadBtn").onclick = function(){
     if(!finalBlob){
-        alert("no video to upload!!");
+        alert("no video to upload!");
         return;
     }
 
-    let formData = new formData();
-    formData.append("file",finalBlob, "kyc_video.mp4");
+    let formData = new FormData();
+    formData.append("file",finalBlob,"kyc_video.webm");
 
-fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec",{
+    fetch("https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec",{
             method:"POST",
             body:fromData
          })
-         .then(res => res.text())
-         .then(msg=>alert("video uploaded successfully!"))
-         .catch(err=>alert("upload failed!"));
+         .then(res => r.text())
+         .then(msg=> alert("video uploaded successfully!"))
+         .catch(err=> alert("upload failed!"));
     };
+
+
+
+
