@@ -6,16 +6,6 @@
     overflow: auto;
     
 }
-
-button{
-    background-color: BLUE;
-    margin-top: 10PX;
-    border: 2PX;
-    border-radius: 3PX;
-}
-
-
-
 :root{
   --brand:#007bff;
   --bg:#fff;
@@ -70,3 +60,4 @@ video{width:320px;max-width:100%;border-radius:6px;border:1px solid #333}
   .controls{display:flex;flex-direction:column;gap:8px}
   button{width:100%}
 }
+
