@@ -7,9 +7,9 @@
 </head>
 <link rel="stylesheet" href="link.css">
 <body>
-    <h1>video KYC process</h1>
+    <h1 id="requestNumber">video KYC process for Request number:</h1>
 
-    Dear customer,
+   <h2 id="customerName">Dear customer,</h2> 
 
 Please give us your video consent for the application after reading the terms and condition.
 
@@ -34,15 +34,14 @@ Please give us your video consent for the application after reading the terms an
 
           <button id="startKYC">start KYC</button>
           <button id="stopBtn" style="display: none;">stop recording</button>
-         <button id="uploadBtn" style="display: none;">upload video</button>
-
+          <button id="uploadBtn" style="display: none;">upload video</button>
      
 
      <!--live camera-->
-     <video id="preview" width="300px" autoplay playsinline style="display: none; border: 2px solid #000;"></video>
+     <video id="preview" width="300px" autoplay playsinline style="display: none; border: 2px solid #000; width: 300px;"></video>
 
        <!--record vid-->
-    <video id="recorded" width="300px" controls style="display: none; margin-top: 20px;"></video>
+    <video id="recorded" width="300px" controls style="display: none; margin-top: 20px; width: 300px;"></video>
 
 
          <script src="link.js"></script>
