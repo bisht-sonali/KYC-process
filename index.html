@@ -6,28 +6,25 @@
   <title>BLC KYC</title>
   <link rel="stylesheet" href="link.css">
 </head>
+
 <body>
   <main class="wrap">
     
     <h1 id="requestNumber">Video KYC process for Request No:</h1>
     <h2 id="customerName">Dear Customer,</h2>
 
-    <p id="intro">
-      Please give us your video consent for the application after reading the terms and condition.
-    </p>
+    <p>Please give us your video consent after reading the terms & conditions.</p>
 
-    <div class="scroll-box" aria-label="KYC instructions">
+    <div class="scroll-box">
       <p>
-        🔹 Please ensure you are in a well-lit area during the Video KYC process.<br/>
-        🔹 Keep your original ID proof ready for verification.<br/>
-        🔹 The video session will be recorded for compliance purposes.<br/>
-        🔹 Make sure your internet connection is stable.<br/>
-        🔹 Do not refresh or close the page during the process.<br/>
-        🔹 For any issue, contact our customer support team.
+        🔹 Ensure good lighting.<br/>
+        🔹 Keep ID proof ready.<br/>
+        🔹 Do not refresh during recording.<br/>
+        🔹 Stable internet is required.<br/>
       </p>
     </div>
 
-    <p><span class="warning">Note: The recorded video will be treated as consent for terms and conditions.</span></p>
+    <p class="warning">Note: The recorded video will be treated as consent.</p>
 
     <div class="controls">
       <button id="startKYC">Start KYC</button>
@@ -40,10 +37,9 @@
       <video id="recorded" controls playsinline></video>
     </div>
 
-    <div id="status" class="status" aria-live="polite"></div>
+    <div id="status" class="status"></div>
   </main>
 
-  <!-- LOAD JS LAST — important for phone -->
   <script src="link.js"></script>
 </body>
 </html>
