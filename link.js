@@ -1,27 +1,30 @@
-/* ---------------------------
-  Google Script URL
----------------------------- */
+/* ---------------------------------------
+   CONFIG – Google Script Upload URL
+---------------------------------------- */
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec";
 
-/* ---------------------------
-  Get customer name from URL
----------------------------- */
+
+/* ---------------------------------------
+   Helper: Get Name from URL ?name=Sonali
+---------------------------------------- */
 function getNameFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("name") || "";
 }
 
-/* ---------------------------
-  Generate Request ID
----------------------------- */
+
+/* ---------------------------------------
+   Generate Request ID
+---------------------------------------- */
 function generateRequestID() {
   return "ALCREQ" + Math.floor(100 + Math.random() * 900);
 }
 
-/* ---------------------------
-  DOM elements
----------------------------- */
+
+/* ---------------------------------------
+   DOM references
+---------------------------------------- */
 const elRequest = document.getElementById("requestNumber");
 const elName = document.getElementById("customerName");
 const elStart = document.getElementById("startKYC");
@@ -35,18 +38,20 @@ let mediaRecorder = null;
 let recordedChunks = [];
 let finalBlob = null;
 
-/* ---------------------------
-  Init Page (Name + Request ID)
----------------------------- */
+
+/* ---------------------------------------
+   Init User Name + Request ID
+---------------------------------------- */
 (function initUser() {
   const name = getNameFromURL();
   elName.textContent = name ? Dear ${name}, : "Dear Customer,";
   elRequest.textContent = Video KYC Process for Request No: ${generateRequestID()};
 })();
 
-/* ---------------------------
-  Start Recording
----------------------------- */
+
+/* ---------------------------------------
+   START RECORDING (Mobile Friendly)
+---------------------------------------- */
 elStart.addEventListener("click", async () => {
   recordedChunks = [];
   finalBlob = null;
@@ -56,22 +61,28 @@ elStart.addEventListener("click", async () => {
   elStatus.textContent = "";
 
   try {
+    // Mobile safe constraints
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
+      video: {
+        facingMode: "user",
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: true
     });
 
-    // Show live camera preview
+    // Live preview
     elPreview.srcObject = stream;
     elPreview.style.display = "block";
 
-    // UI updates
     elStart.style.display = "none";
     elStop.style.display = "inline-block";
     elStatus.textContent = "Recording...";
 
-    // Create recorder
-    mediaRecorder = new MediaRecorder(stream);
+    // MediaRecorder (mobile supported format)
+    mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "video/webm; codecs=vp8"
+    });
 
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) recordedChunks.push(e.data);
@@ -82,28 +93,31 @@ elStart.addEventListener("click", async () => {
 
       elRecorded.src = URL.createObjectURL(finalBlob);
       elRecorded.style.display = "block";
-
       elUpload.style.display = "inline-block";
+
       elStatus.textContent = "Recording stopped — preview below.";
     };
 
     mediaRecorder.start();
   } catch (err) {
-    console.error("Camera Error:", err);
-    elStatus.textContent =
-      "Camera not accessible. Allow permission & use HTTPS mode.";
+    console.error(err);
     alert("Camera access failed: " + err);
+    elStatus.textContent = "Camera not accessible. Try Chrome.";
   }
 });
 
-/* ---------------------------
-  Stop Recording
----------------------------- */
-elStop.addEventListener("click", () => {
-  if (mediaRecorder) mediaRecorder.stop();
 
+/* ---------------------------------------
+   STOP RECORDING
+---------------------------------------- */
+elStop.addEventListener("click", () => {
+  if (!mediaRecorder) return;
+
+  mediaRecorder.stop();
+
+  // Turn off camera after stopping
   if (elPreview.srcObject) {
-    elPreview.srcObject.getTracks().forEach((track) => track.stop());
+    elPreview.srcObject.getTracks().forEach(t => t.stop());
     elPreview.srcObject = null;
   }
 
@@ -111,17 +125,13 @@ elStop.addEventListener("click", () => {
   elStart.style.display = "inline-block";
 });
 
-/* ---------------------------
-  Upload to Google Script
----------------------------- */
+
+/* ---------------------------------------
+   UPLOAD VIDEO
+---------------------------------------- */
 elUpload.addEventListener("click", async () => {
   if (!finalBlob) {
-    alert("No video recorded yet.");
-    return;
-  }
-
-  if (!GOOGLE_SCRIPT_URL) {
-    alert("Google Script URL missing!");
+    alert("No video recorded.");
     return;
   }
 
@@ -131,25 +141,22 @@ elUpload.addEventListener("click", async () => {
   try {
     const fd = new FormData();
     fd.append("file", finalBlob, KYC_${Date.now()}.webm);
-
-    const name = getNameFromURL();
-    fd.append("name", name);
+    fd.append("name", getNameFromURL());
     fd.append("requestId", elRequest.textContent);
 
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       body: fd,
     });
 
-    const text = await response.text();
-
-    elStatus.textContent = "Upload completed.";
-    alert("Upload successful: " + text);
+    const text = await res.text();
+    elStatus.textContent = "Upload complete.";
+    alert("Upload successful!");
   } catch (err) {
     console.error(err);
-    elStatus.textContent = "Upload failed.";
     alert("Upload failed: " + err);
-  } finally {
-    elUpload.disabled = false;
+    elStatus.textContent = "Upload error.";
   }
+
+  elUpload.disabled = false;
 });
