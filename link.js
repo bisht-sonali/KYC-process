@@ -46,10 +46,10 @@ let finalBlob = null;
   const name = getNameFromURL();
   
   // FIXED TEMPLATE STRING
-  elName.textContent = name ? Dear ${name}, : "Dear Customer,";
+  elName.textContent = name ? `Dear ${name},` : "Dear Customer,";
 
   // FIXED TEMPLATE STRING
-  elRequest.textContent = Video KYC Process for Request No: ${generateRequestID()};
+  elRequest.textContent = `Video KYC Process for Request No: ${generateRequestID()}`;
 })();
 
 
@@ -146,7 +146,7 @@ elUpload.addEventListener("click", async () => {
     const fd = new FormData();
     
     // FIXED TEMPLATE STRING
-    fd.append("file", finalBlob, KYC_${Date.now()}.webm);
+    fd.append("file", finalBlob,` KYC_${Date.now()}.webm`);
     
     fd.append("name", getNameFromURL());
     fd.append("requestId", elRequest.textContent);
