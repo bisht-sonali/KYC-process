@@ -44,7 +44,7 @@ let finalBlob = null;
 ---------------------------------------- */
 (function initUser() {
   const name = getNameFromURL();
-  
+   
   // FIXED TEMPLATE STRING
   elName.textContent = name ? `Dear ${name},` : "Dear Customer,";
 
