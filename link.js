@@ -1,5 +1,5 @@
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbz7IoXYmXJuWo1s03bP45N9HsWdev-WNhfghk-epiKWqCfseyZwUb6qtv2QFc70JI-bWA/exec";
+const BACKEND_URL =
+  "https://db-9onl.onrender.com/upload";
 
 function getNameFromURL() {
   const p = new URLSearchParams(window.location.search);
@@ -84,7 +84,7 @@ elUpload.addEventListener("click", async () => {
   fd.append("requestId", elRequest.textContent);
 
   try {
-    await fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: fd });
+    await fetch(BACKEND_URL, { method: "POST", body: fd });
     elStatus.textContent = "Upload successful!";
     alert("Uploaded successfully");
 
