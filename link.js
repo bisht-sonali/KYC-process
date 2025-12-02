@@ -1,15 +1,10 @@
-const BACKEND_URL =
-  "https://db-9onl.onrender.com/upload";
+const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+const SUPABASE_KEY = "YOUR_ANON_PUBLIC_KEY";
 
-function getNameFromURL() {
-  const p = new URLSearchParams(window.location.search);
-  return p.get("name") || "";
-}
+// Initialize Supabase
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function generateRequestID() {
-  return "ALCREQ" + Math.floor(100 + Math.random() * 900);
-}
-
+// Elements
 const elRequest = document.getElementById("requestNumber");
 const elName = document.getElementById("customerName");
 const elStart = document.getElementById("startKYC");
@@ -21,75 +16,93 @@ const elStatus = document.getElementById("status");
 
 let mediaRecorder, finalBlob, recordedChunks = [];
 
+// Generate Request ID
+function generateRequestID() {
+  return "ALCREQ" + Math.floor(100 + Math.random() * 900);
+}
+
+// Load Name & Request ID
 (function init() {
-  const name = getNameFromURL();
-  elName.textContent = name ? `Dear ${name},` : "Dear Customer,";
-  elRequest.textContent = `Video KYC Process for Request No: ${generateRequestID()}`;
+  const p = new URLSearchParams(window.location.search);
+  const name = p.get("name") || "Customer";
+
+  elName.textContent = "Dear " + name;
+  elRequest.textContent = generateRequestID();
 })();
 
+// Start KYC
 elStart.addEventListener("click", async () => {
   recordedChunks = [];
-  finalBlob = null;
-  elUpload.style.display = "none";
-  elRecorded.style.display = "none";
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" },
-      audio: true
-    });
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  elPreview.srcObject = stream;
 
-    elPreview.srcObject = stream;
-    elPreview.style.display = "block";
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
 
-    mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.onstop = () => {
+    finalBlob = new Blob(recordedChunks, { type: "video/webm" });
+    elRecorded.src = URL.createObjectURL(finalBlob);
+    elRecorded.style.display = "block";
+    elUpload.style.display = "block";
+  };
 
-    mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
-
-    mediaRecorder.onstop = () => {
-      finalBlob = new Blob(recordedChunks, { type: "video/webm" });
-      elRecorded.src = URL.createObjectURL(finalBlob);
-      elRecorded.style.display = "block";
-      elUpload.style.display = "block";
-      elStatus.textContent = "Recording complete.";
-    };
-
-    mediaRecorder.start();
-    elStatus.textContent = "Recording...";
-    elStart.style.display = "none";
-    elStop.style.display = "block";
-
-  } catch (err) {
-    alert("Camera access failed.");
-  }
+  mediaRecorder.start();
+  elStart.style.display = "none";
+  elStop.style.display = "block";
 });
 
+// Stop recording
 elStop.addEventListener("click", () => {
   mediaRecorder.stop();
   elPreview.srcObject.getTracks().forEach(t => t.stop());
-  elPreview.srcObject = null;
 
   elStop.style.display = "none";
   elStart.style.display = "block";
 });
 
+// Upload to Supabase
 elUpload.addEventListener("click", async () => {
-  if (!finalBlob) return alert("No video recorded");
-
   elStatus.textContent = "Uploading...";
 
-  const fd = new FormData();
-  fd.append("file", finalBlob, `KYC_${Date.now()}.webm`);
-  fd.append("name", getNameFromURL());
-  fd.append("requestId", elRequest.textContent);
+  const name = elName.textContent.replace("Dear ", "");
+  const requestId = elRequest.textContent;
 
-  try {
-    await fetch(BACKEND_URL, { method: "POST", body: fd });
-    elStatus.textContent = "Upload successful!";
-    alert("Uploaded successfully");
+  const fileName = `KYC_${requestId}_${Date.now()}.webm`;
 
-  } catch (err) {
-    elStatus.textContent = "Upload failed";
+  // Upload to Supabase Storage bucket "kyc_videos"
+  const { data, error } = await supabase.storage
+    .from("kyc_videos")
+    .upload(fileName, finalBlob);
+
+  if (error) {
+    elStatus.textContent = "Upload Failed";
     alert("Upload error");
+    return;
   }
+
+  // Get public URL
+  const { data: urlData } = supabase.storage
+    .from("kyc_videos")
+    .getPublicUrl(fileName);
+
+  const videoURL = urlData.publicUrl;
+
+  // Save record in Supabase Table
+  const { error: dbError } = await supabase
+    .from("kyc_records")
+    .insert({
+      customer_name: name,
+      request_id: requestId,
+      video_url: videoURL
+    });
+
+  if (dbError) {
+    elStatus.textContent = "Database Error";
+    alert("DB Error");
+    return;
+  }
+
+  elStatus.textContent = "Upload Successful!";
+  alert("Video Uploaded Successfully!");
 });
